@@ -37,4 +37,12 @@ export class VariableExpression extends Expression {
     this.power.eval();
     return this;
   }
+
+  equal(expression: Expression): boolean {
+    if (expression instanceof VariableExpression) {
+      expression.match = this.toString();
+      return expression.identifier === this.identifier && super.equal(expression);
+    }
+    return super.equal(expression);
+  }
 }

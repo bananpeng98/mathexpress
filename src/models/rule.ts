@@ -14,8 +14,10 @@ export class Rule {
     const from = ExpressionParser.parse(this.from);
     const to = ExpressionParser.parse(this.to);
     if (from.equal(expression)) {
-      return expression.convert(to) as Expression;
+      expression = expression.convert(to) as Expression;
     }
+    console.log(expression);
+    expression.iterate((n) => n.match = undefined);
     return expression;
   }
 

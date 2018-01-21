@@ -55,6 +55,13 @@ export class Node {
     return converted;
   }
 
+  iterate(fn: (n: Node) => void) {
+    fn(this);
+    for (let i = 0; i < this.children.length; i++) {
+      this.children[i].iterate(fn);
+    }
+  }
+
   getLeaves(): Node[] {
     const leaves = [];
 

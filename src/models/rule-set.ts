@@ -8,14 +8,22 @@ export class RuleSet {
   constructor() {
     this.rules = [];
     this.add(new Rule().fromString('(?0+?1)*(?2+?3)', '?0*?2+?0*?3+?1*?2+?1*?3'));
+    this.add(new Rule().fromString('?0+(?1+?2)', '(?0+?1)+?2'));
+    // this.add(new Rule().fromString('(?0+?1+?2+?3)*(?4+?5)', '?0*?4+?0*?5+?1*?4+?1*?5+?2*?4+?2*?5+?3*?4+?3*?5'));
     this.add(new Rule().fromString('#0*(?0+?1)', '#0*?0+#0*?1'));
     this.add(new Rule().fromString('#0+?0', '?0+#0'));
+
     this.add(new Rule().fromString('0+?0', '?0'));
     this.add(new Rule().fromString('?0+0', '?0'));
+
     this.add(new Rule().fromString('1*?0', '?0'));
     this.add(new Rule().fromString('?0*1', '?0'));
     this.add(new Rule().fromString('0*?0', '0'));
     this.add(new Rule().fromString('?0*0', '0'));
+
+    this.add(new Rule().fromString('0/?0', '0'));
+    this.add(new Rule().fromString('?0/1', '?0'));
+
     this.add(new Rule().fromString('1-1', '0'));
   }
 
@@ -24,7 +32,9 @@ export class RuleSet {
       expression = this.rules[i].apply(expression);
     }
     for (let j = 0; j < expression.children.length; j++) {
-      expression.children[j] = this.simplify(expression.children[j] as Expression);
+      if (expression.children[j].children.length !== 0) {
+        expression.children[j] = this.simplify(expression.children[j] as Expression);
+      }
     }
     return expression;
   }
