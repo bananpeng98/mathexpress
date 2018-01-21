@@ -7,15 +7,18 @@ export class VariableExpression extends Expression {
   multiple: Expression;
   power: Expression;
 
-  constructor(identifier: string, multiple: number = 1, power: number = 1) {
+  constructor(identifier: string, multiple: Expression = new NumberExpression(1), power: Expression = new NumberExpression(1)) {
     super();
     this.identifier = identifier;
-    this.multiple = new NumberExpression(multiple);
-    this.power = new NumberExpression(power);
+    this.multiple = multiple;
+    this.power = power;
+    this.add(this.multiple);
+    this.add(this.power);
   }
 
   toString() {
-    return this.getString(this.multiple) + this.identifier + this.getString(this.power);
+    const power = this.getString(this.power);
+    return this.getString(this.multiple) + this.identifier + (power !== '' ? '^' + power : '');
   }
 
   getString(expr: Expression) {

@@ -3,6 +3,8 @@ import { TokenType } from './models/token-type';
 import { BinaryOperatorExpression } from './models/binary-operator-expression';
 import { UnaryOperatorExpression } from './models/unary-operator-expression';
 import { NumberExpression } from './models/number-expression';
+import { AnyExpression } from './models/any-expression';
+import { AnyNumberExpression } from './models/any-number-expression';
 import { VariableExpression } from './models/variable-expression';
 import { Expression } from './models/expression';
 
@@ -14,6 +16,7 @@ export class ExpressionParser {
 
   static parse(tokens: TokenStack): Expression {
     const expression: Expression = this.parseAddition(tokens);
+    tokens.reset();
     return expression;
   }
 
@@ -64,10 +67,22 @@ export class ExpressionParser {
   static parseConstant(tokens: TokenStack): Expression {
     if (tokens.matchType(TokenType.Literal)) {
       const val = tokens.pop(TokenType.Literal).value;
+      if (tokens.matchType(TokenType.Identifier)) {
+        const id = tokens.pop(TokenType.Identifier).value;
+        return new VariableExpression(id, new NumberExpression(val));
+      }
       return new NumberExpression(val);
     } else if (tokens.matchType(TokenType.Identifier)) {
       const val = tokens.pop(TokenType.Identifier).value;
       return new VariableExpression(val);
+    } else if (tokens.match(TokenType.Symbol, '?')) {
+      tokens.pop(TokenType.Symbol, '?');
+      const val = tokens.pop(TokenType.Literal).value;
+      return new AnyExpression(val);
+    } else if (tokens.match(TokenType.Symbol, '#')) {
+      tokens.pop(TokenType.Symbol, '#');
+      const val = tokens.pop(TokenType.Literal).value;
+      return new AnyNumberExpression(val);
     }
   }
 }

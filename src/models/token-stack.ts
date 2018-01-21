@@ -13,6 +13,10 @@ export class TokenStack {
     this.current = 0;
   }
 
+  reset() {
+    this.current = 0;
+  }
+
   push(token: Token) {
     this.stack.push(token);
   }
@@ -21,7 +25,8 @@ export class TokenStack {
     if (this.stack[this.current].type === type && (this.stack[this.current].value === value || !value)) {
       return this.stack[this.current++];
     } else {
-      console.error(`Unexpexted token ${type.toString()}: ${value}`);
+      const token = this.stack[this.current];
+      console.error(`Unexpexted token ${token.type.toString()}: ${token.value} at column ${token.column}`);
     }
   }
 

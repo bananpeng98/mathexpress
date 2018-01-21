@@ -10,6 +10,8 @@ export class FractionExpression extends Expression {
     super();
     this.numerator = numerator;
     this.denominator = denominator;
+    this.add(this.numerator);
+    this.add(this.denominator);
   }
 
   toString() {

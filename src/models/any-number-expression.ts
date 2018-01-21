@@ -1,6 +1,7 @@
 import { Expression } from './expression';
+import { NumberExpression } from './number-expression';
 
-export class NumberExpression extends Expression {
+export class AnyNumberExpression extends Expression {
   value: number;
 
   constructor(value: number) {
@@ -9,7 +10,7 @@ export class NumberExpression extends Expression {
   }
 
   toString() {
-    return this.value.toString();
+    return '#' + this.value.toString();
   }
 
   eval(): Expression {
@@ -19,7 +20,7 @@ export class NumberExpression extends Expression {
   equal(expression: Expression): boolean {
     if (expression instanceof NumberExpression) {
       expression.match = this.toString();
-      return expression.value === this.value;
+      return true;
     }
     return super.equal(expression);
   }

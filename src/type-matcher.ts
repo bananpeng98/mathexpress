@@ -19,4 +19,8 @@ export class TypeMatcher {
       return second;
     }
   }
+
+  static bothInOrder(first: any, second: any, type1: any, type2: any) {
+    return first instanceof type1 && second instanceof type2;
+  }
 }

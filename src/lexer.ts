@@ -18,19 +18,19 @@ export class Lexer {
     let c: string = code[current];
     while (c) {
       if (this.contains(c, ' \n')) {
-        stack.push(new Token(TokenType.Whitespace));
+        // stack.push(new Token(TokenType.Whitespace, c, current));
       } else if (this.contains(c, '+-*/')) {
-        stack.push(new Token(TokenType.Operator, c));
-      } else if (this.contains(c, '(){}[],;=')) {
+        stack.push(new Token(TokenType.Operator, c, current));
+      } else if (this.contains(c, '(){}[],;=#?')) {
         stack.push(new Token(TokenType.Symbol, c));
       } else if (c.match(/[\.0-9]/)) {
         const val = this.lexWhile(/[\.0-9]/, code, current);
+        stack.push(new Token(TokenType.Literal, parseFloat(val), current));
         current += val.length - 1;
-        stack.push(new Token(TokenType.Literal, parseFloat(val)));
       } else if (c.match(/[a-zA-Z]/)) {
         const val = this.lexWhile(/[a-zA-Z]/, code, current);
+        stack.push(new Token(TokenType.Identifier, val, current));
         current += val.length - 1;
-        stack.push(new Token(TokenType.Identifier, val));
       }
       c = code[++current];
     }

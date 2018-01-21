@@ -1,8 +1,10 @@
 import { Expression } from './expression';
+import { RuleSet } from './rule-set';
 import { NumberExpression } from './number-expression';
 import { FractionExpression } from './fraction-expression';
 import { VariableExpression } from './variable-expression';
 import { TypeMatcher } from '../type-matcher';
+import { Rule } from './rule';
 
 export class BinaryOperatorExpression extends Expression {
   private static operatorPriority = {
@@ -12,16 +14,21 @@ export class BinaryOperatorExpression extends Expression {
     '-': true
   };
 
-  private left: Expression;
   private operator: string;
-  private right: Expression;
-
 
   constructor(left: Expression, operator: string, right: Expression) {
     super();
-    this.left = left;
     this.operator = operator;
-    this.right = right;
+    this.add(left);
+    this.add(right);
+  }
+
+  get left(): Expression {
+    return this.children[0] as Expression;
+  }
+
+  get right(): Expression {
+    return this.children[1] as Expression;
   }
 
   toString() {
@@ -39,30 +46,10 @@ export class BinaryOperatorExpression extends Expression {
     return expression.toString();
   }
 
-  eval(): Expression {
-    const expression = new BinaryOperatorExpression(this.left.eval(), this.operator, this.right.eval());
-    const left = expression.left;
-    const right = expression.right;
-
-    if (TypeMatcher.bothIs(left, right, NumberExpression)) {
-      return this.evalNumbers(
-        (left as NumberExpression).value,
-        (right as NumberExpression).value
-      );
+  equal(expression: Expression): boolean {
+    if (expression instanceof BinaryOperatorExpression) {
+      return expression.operator === this.operator && super.equal(expression);
     }
-
-    return expression;
-  }
-
-  private evalNumbers(left: number, right: number): Expression {
-    switch (this.operator) {
-      case '+': return new NumberExpression(left + right);
-      case '-': return new NumberExpression(left - right);
-      case '*': return new NumberExpression(left * right);
-      case '/': return new FractionExpression(
-        new NumberExpression(left),
-        new NumberExpression(right)
-      ).eval();
-    }
+    return super.equal(expression);
   }
 }

@@ -9,6 +9,7 @@ export class UnaryOperatorExpression extends Expression {
     super();
     this.operator = operator;
     this.right = right;
+    this.add(this.right);
   }
 
   toString() {
